@@ -1,411 +1,365 @@
 <?php
-$token = "7690752619:AAFDTs0sBGvBgAkapX4PDZp6FYcXX53YilM";
-$update = json_decode(file_get_contents('php://input'));
-if(isset($update->message) || isset($update->callback_query)):
-$message = $update->message ;
-$data=  $update->callback_query->data;
-$id = $message->from->id ?? $update->callback_query->from->id;
-$chat_id = $message->chat->id ?? $update->callback_query->message->chat->id;
-$text = $message->text ;
-$user = $message->from->username ?? $update->callback_query->from->username;
-$name = $message->from->first_name ?? $update->callback_query->from->first_name;
-$message_id = $message->message_id ?? $update->callback_query->message->message_id;
-$type = $message->chat->type ?? $update->callback_query->message->chat->type;
-$reply = $message->reply_to_message;
-endif;
-$link =  "https://".$_SERVER["SERVER_NAME"].$_SERVER["PHP_SELF"];
-echo file_get_contents("https://api.telegram.org/bot$token/setWebHook?url=$link");
-$info = json_decode(file_get_contents("info.json"),1);
-function save(){
-	global $info;
-	if(! empty ($info)) 
-	file_put_contents("info.json",json_encode($info,448));
-}
-$api_key = ! empty ($info["key"])?$info["key"]: null;
-$admin =5295190543 ;//ايدي الادمن
-require "class.php";
-require "Telegram.php";
-$api = new sms_man_com ($api_key);
-$bot = new Telegram ($token);
-$ex = explode ("#",$data);
-if($id == $admin ){
-	
-	if($text == "/start" or $data == "back") {
-		$info["admin"] = "";
-		save();
-		if($data=="back")
-		$bot->deletemessage ([
-			"chat_id"=>$chat_id,
-			"message_id"=>$message_id
-		]);
-		$bot->sendmessage ([
-			"chat_id"=>$chat_id,
-			"text"=>" مرحبآ عزيزي الادمن \n معلومه عند ايقاف الصيد يستمر الصيد بعد الايقاف دقايق ثم يتوقف \n عليك ادخال التوكن البوت واضافه رموز الدول لكي تتمكن من الصيد من الازرار التاليه",
-			"reply_markup"=>json_encode([
-				"inline_keyboard"=>[
-					[["text"=>"اضافة دولة ➕","callback_data"=>"add"],
-					["text"=>"حذف دولة 🗑️","callback_data"=>"del"]],
-					[["text"=>"رفع api key","callback_data"=>"up"],
-					["text"=>"حذف api key","callback_data"=>"rem"]],
-					[["text"=>"الدول المضافة 📊","callback_data"=>"all"]],
-					[["text"=>"تشغيل الصيد","callback_data"=>"work"]],
-					[["text"=>"ايقاف الصيد","callback_data"=>"stop"]],
-					[["text"=>"رموز  الدول في الموقع","callback_data"=>"infouse"]],
-				]
-			])
-		]);
-		
-	} elseif($data == "work") {
-		$bot->sendmessage ([
-			"chat_id"=>$chat_id,
-			"text"=>"تم تشغيل الصيد"
-		]);
-		$info["status"]="work";
-		save();
-	} elseif($data == "infouse") {
-       $bot->sendmessage(["chat_id"=>$chat_id,
-			"text"=>"
-0 الاتحاد الروسي
- 2-كازاخستان
- 3-الصين
- 1 أوكرانيا
- 187-الولايات المتحدة الأمريكية
- 7 ماليزيا
- 6-اندونيسيا
- 4-الفلبين
- 5-ميانمار
- 10 فييت نام
- 32-رومانيا
- 15 بولندا
- 36-كندا
- 22-الهند
- 147-زامبيا
- 66-باكستان
- 60-بنجلاديش
- 54-المكسيك
- 24-24 كمبوديا
- 90-نيكاراغوا
- 8-كينيا
- 11 قرغيزستان
- 13 إسرائيل
- 14 هونج كونج
- 16-المملكة المتحدة لبريطانيا العظمى وأيرلندا الشمالية
- 17-مدغشقر
- 150-الكونغو
- 19-نيجيريا
- 20 ماكاو
- 21 مصر
- 23-أيرلندا
- 25 جمهورية لاو الديمقراطية الشعبية
- 26-هايتي
- 27-كوت ديفوار
- 28-غامبيا
- 29-صربيا
- 30 اليمن
- 31-جنوب افريقيا
- 33-كولومبيا
- 34-إستونيا
- 35-أذربيجان
- 37-المغرب
- 38-غانا
- 39-الأرجنتين
- 40 أوزبكستان
- 41-الكاميرون
- 42-تشاد
- 43-ألمانيا
- 44-ليتوانيا
- 45-كرواتيا
- 46-السويد
- 47-العراق
- 48-هولندا
- 49-لاتفيا
- 50 النمسا
- 51-بيلاروسيا
- 52-تايلاند
- 53-السعودية
- 55-تايوان، مقاطعة الصين
- 56-إسبانيا
- 57-إيران (جمهورية -الإسلامية)
- 58-الجزائر
- 59-سلوفينيا
- 61-السنغال
- 62-تركيا
- 63-تشيكيا
- 64-سريلانكا
- 65-بيرو
- 67-نيوزيلاندا
- 68-غينيا
- 69-مالي
- 70-فنزويلا (جمهورية -البوليفارية)
- 71-إثيوبيا
- 72-منغوليا
- 73-البرازيل
- 74-أفغانستان
- 75-أوغندا
- 76-أنغولا
- 77-قبرص
- 78-فرنسا
- 79-بابوا غينيا الجديدة
- 80-موزمبيق
- 81-نيبال
- 82-بلجيكا
- 83-بلغاريا
- 84-المجر
- 85-مولدوفا، جمهورية
- 86-إيطاليا
- 87-باراغواي
- 88-هندوراس
- 89-تونس
- 149-الصومال
- 91-تيمور -ليشتي
- 92-بوليفيا (دولة -المتعددة القوميات)
- 93-كوستاريكا
- 94-جواتيمالا
- 95-الإمارات العربية المتحدة
- 96-زيمبابوي
- 97-بورتو ريكو
- 98-السودان
- 99-توغو
- 18-الكونغو، جمهورية الكونغو الديمقراطية
- 155 ألبانيا
- 169-أنتيغوا وبربودا
- 148-أرمينيا
- 175-أستراليا
- 122-جزر الباهاما
- 145 البحرين
- 118 -باربادوس
- ١٣٤ -بيليز
- ١٢٠ -بنين
- 158-بوتان
- 108-البوسنة والهرسك
- 123-بوتسوانا
- 152-بوركينا فاسو
- 119-بوروندي
- 186 كابو فيردي
- 125-جمهورية أفريقيا الوسطى
- 151-تشيلي
- 133-جزر القمر
- 113-كوبا
- 109-جمهورية الدومينيكان
- 105-الإكوادور
- 101-السلفادور
- 167-غينيا الاستوائية
- 163-فنلندا
- 162 غويانا الفرنسية
- 154 الغابون
- 128-جورجيا
- 129-اليونان
- 127-غرينادا
- 160-جوادلوب
- 130-غينيا -بيساو
- ١٣١ -غيانا
- 132-آيسلندا
- 103-جامايكا
- 182-اليابان
- ١١٦ -الاردن
- 100 الكويت
- 153-لبنان
- 136-ليسوتو
- 135-ليبيريا
- 165-لوكسمبورغ
- 137-مالاوي
- 159-المالديف
- 114-موريتانيا
- 157-موريشيوس
- 138-ناميبيا
- 185-كاليدونيا الجديدة
- 139-النيجر
- 174-النرويج
- 107-عمان
- ١١٧ -البرتغال
- 111-قطر
- 140-رواندا
- 141-سلوفاكيا
- 142-سورينام
- 173-سويسرا
- 143-طاجيكستان
- 104-ترينيداد وتوباغو
- 161-تركمانستان
- 156-أوروغواي
- 102-ليبيا
- ١٨٣ -مقدونيا الشمالية
- 134 سانت كيتس ونيفيس
- 164-سانت لوسيا
- 166 سانت فنسنت وجزر غرينادين
- 110 الجمهورية العربية السورية
- 9-تنزانيا، جمهورية تنزانيا المتحدة
- 106-سوازيلاند
- بنما ١١٢
- ١١٥ -سيراليون
- 146-لم الشمل
- 177-جمهورية جنوب السودان"
-      ] ); 
-    } elseif ($data == "stop") {
-		$bot->sendmessage ([
-			"chat_id"=>$chat_id,
-			"text"=>"تم ايقاف الصيد"
-		]);
-		$info["status"]=null;
-		save();
-	} elseif ($data) {
-		if($data == "all"){
-			$all = join ("\n",$info["countries"]) ?? "لاتوجد دول مضافة";
-			$bot->answercallbackquery([
-				"callback_query_id" => $update->callback_query->id,
-				"text"=>"$all",
-				"show_alert"=>true,
-			]);
-		} elseif ($data == "add") {
-			$bot->editmessagetext([
-				"chat_id"=>$chat_id,
-				"text"=>"قم بارسال رمز الدولة في موقع البوت",
-				"message_id"=>$message_id,
-				"reply_markup"=>json_encode([
-					"inline_keyboard"=>[
-						[["text"=>"رجوع🔙","callback_data"=>"back"]],
-					]
-				])
-			]);
-			$info["admin"] = "add";
-			save();
-		} elseif ($data == "del") {
-			$bot->editmessagetext([
-				"chat_id"=>$chat_id,
-				"text"=>"قم بارسال كود الدولة",
-				"message_id"=>$message_id,
-				"reply_markup"=>json_encode([
-					"inline_keyboard"=>[
-						[["text"=>"رجوع🔙","callback_data"=>"back"]],
-					]
-				])
-			]);
-			$info["admin"] = "del";
-			save();
-		}/* elseif ($ex[0] == "getCode" ) {
-			$res = $api->getCode($ex[1]);
-			if($res["ok"] == true ) {
-				$code = $res["code"];
-				$bot->editmessagetext([
-					"chat_id"=>$chat_id,
-					"text"=>"تم وصول الكود بنجاح\n$ex[2]\n$code",
-					"message_id"=>$message_id
-				]);
-			} else {
-				$bot->answercallbackquery([
-					"callback_query_id" => $update->callback_query->id,
-					"text"=>"🚫 لم يصل الكود",
-					"show_alert"=>true,
-				]);
-			}
-		} elseif ($ex[0] == "ban" ) {
-			$res = $api->cencel($ex[1]);
-			$bot->editmessagetext([
-				"chat_id"=>$chat_id,
-				"text"=>"تم حظر الرقم بنجاح",
-				"message_id"=>$message_id
-			]);
-		}*/
-		elseif ($data == "up") {
-			if($api_key == null) {
-				$bot->editmessagetext([
-					"chat_id"=>$chat_id,
-					"text"=>"قم بارسال api key الخاص بحسابك",
-					"message_id"=>$message_id,
-					"reply_markup"=>json_encode([
-						"inline_keyboard"=>[
-							[["text"=>"رجوع🔙","callback_data"=>"back"]],
-						]
-					])
-				]);
-				$info["admin"] = "up";
-				save();
-			}else{
-				$bot->answercallbackquery([
-					"callback_query_id" => $update->callback_query->id,
-					"text"=>"لايمكنك اضافة api key جديد الا بعد حذف القديم",
-					"show_alert"=>true,
-				]);
-			}
-		}elseif ($data == "rem") {
-			$bot->editmessagetext([
-				"chat_id"=>$chat_id,
-				"text"=>"تم الحذف بنجاح",
-				"message_id"=>$message_id,
-				"reply_markup"=>json_encode([
-					"inline_keyboard"=>[
-						[["text"=>"رجوع🔙","callback_data"=>"back"]],
-					]
-				])
-			]);
-			unset($info["key"]);
-			save();
-		}
-	} elseif ($text && $info["admin"] == "add") {
-		$code = uniqid (1);
-		$info["countries"][$code] = $text;
-		$info["admin"] = "";
-		save();
-		$bot->sendmessage ([
-			"chat_id"=>$chat_id,
-			"text"=>"تمت الاضافة بنجاح\nكود الدولة\n$code\nيستخدم هذا الكود عند الرغبة بحذف الدولة"
-		]);
-	} elseif ($text && $info["admin"] == "del") {
-		if($info["countries"][$text] == null){
-			$bot->sendmessage ([
-				"chat_id"=>$chat_id,
-				"text"=>"لاتوجد دولة مضافة بهذا الكود"
-			]);
-			$info["admin"] = "";
-			save();
-		} else {
-			unset($info["countries"][$text]);
-			$info["admin"] = "";
-			save();
-			$bot->sendmessage ([
-				"chat_id"=>$chat_id,
-				"text"=>"تم الحذف بنجاح"
-			]);
-		}
-	}
-	elseif ($text && $info["admin"] == "up") {
-		$info["key"] = $text;
-		$info["admin"] = "";
-		save();
-		$bot->sendmessage ([
-			"chat_id"=>$chat_id,
-			"text"=>"تم الحفظ بنجاح"
-		]);
-	}
-} 
+/**
+ * بوت تيليجرام لتحميل الفيديوهات من مواقع التواصل الاجتماعي
+ * يدعم: يوتيوب، تيك توك، فيسبوك، إنستغرام، تويتر، وغيرها عبر خدمات متعددة
+ * الإصدار: 2.0
+ * تاريخ: 2026-08-12
+ */
 
+// ========== إعدادات البوت ==========
+define('BOT_TOKEN', '6580071450:AAEP2Lkzn5YjfMUYc67euLyA1oD72-vsgIE');
+define('API_URL', 'https://api.telegram.org/bot' . BOT_TOKEN . '/');
+define('CACHE_DIR', __DIR__ . '/cache/'); // لتخزين النتائج مؤقتاً
+if (!is_dir(CACHE_DIR)) mkdir(CACHE_DIR, 0755, true);
 
-if ($ex[0] == "getCode" ) {
-	$res = $api->getCode($ex[1]);
-	if($res["ok"] == true  ) {
-		$code = $res["code"];
-		$bot->editmessagetext([
-			"chat_id"=>$chat_id,
-			"text"=>"تم وصول الكود بنجاح\n\n📞 الرقم:$ex[2]\n\nالكود:$code \n\nhttps://wa.me/+$ex[2]",
-			"message_id"=>$message_id
-		]);
-	} else {
-		$bot->answercallbackquery([
-			"callback_query_id" => $update->callback_query->id,
-			"text"=>"🚫 لم يصل الكود",
-			"show_alert"=>true,
-		]);
-	}
-} elseif ($ex[0] == "ban" ) {
-	$res = $api->cencel($ex[1]);
-	$bot->editmessagetext([
-		"chat_id"=>$chat_id,
-		"text"=>"تم حظر الرقم بنجاح",
-		"message_id"=>$message_id
-	]);
+// ========== معالجة الطلب الوارد (Webhook) ==========
+$content = file_get_contents('php://input');
+$update = json_decode($content, true);
+
+if (!$update) {
+    http_response_code(200);
+    exit('OK');
 }
 
+// استخراج بيانات الرسالة
+$message = $update['message'] ?? null;
+if (!$message) exit;
 
+$chat_id = $message['chat']['id'] ?? null;
+$text = $message['text'] ?? '';
+$reply_to = $message['message_id'] ?? null;
 
+if (!$chat_id) exit;
 
+// تجاهل الأوامر التي تبدأ بـ '/' (لن نستخدم أوامر، فقط نستقبل الروابط)
+// لكننا سنضيف أمر /start للترحيب
+if ($text === '/start') {
+    sendMessage($chat_id, "👋 أهلاً بك! أرسل لي رابط فيديو من أي موقع (يوتيوب، تيك توك، فيسبوك، إنستغرام، تويتر، إلخ) وسأحاول توفير روابط التحميل لك.");
+    exit;
+}
 
+// التحقق من وجود رابط في النص
+$url = extractUrl($text);
+if (!$url) {
+    sendMessage($chat_id, "❌ لم أجد رابطاً صحيحاً في رسالتك. يرجى إرسال رابط فيديو.");
+    exit;
+}
 
+// ========== البحث عن روابط التحميل ==========
+sendMessage($chat_id, "⏳ جاري معالجة الرابط...");
+
+$downloadLinks = getDownloadLinks($url);
+
+if ($downloadLinks === false || empty($downloadLinks)) {
+    sendMessage($chat_id, "❌ عذراً، لم أتمكن من الحصول على روابط التحميل لهذا الرابط. قد يكون الموقع غير مدعوم أو الرابط غير صحيح.");
+    exit;
+}
+
+// ========== عرض النتائج للمستخدم ==========
+if (isset($downloadLinks['error'])) {
+    sendMessage($chat_id, "⚠️ " . $downloadLinks['error']);
+    exit;
+}
+
+// إذا كانت النتيجة تحتوي على روابط مباشرة للفيديو (بجودة مختلفة)
+if (isset($downloadLinks['video'])) {
+    // إرسال روابط الفيديو (جودة متعددة)
+    $reply = "✅ تم العثور على روابط التحميل:\n\n";
+    foreach ($downloadLinks['video'] as $quality => $link) {
+        $reply .= "🎬 $quality: <a href=\"$link\">اضغط للتحميل</a>\n";
+    }
+    // إذا كان يوجد صوت منفصل
+    if (isset($downloadLinks['audio'])) {
+        $reply .= "\n🎵 صوت فقط: <a href=\"{$downloadLinks['audio']}\">تحميل</a>";
+    }
+    sendMessage($chat_id, $reply, 'HTML');
+} else {
+    // إذا كانت النتيجة رابط واحد فقط (مباشر)
+    $reply = "✅ رابط التحميل:\n<a href=\"{$downloadLinks['url']}\">اضغط هنا</a>";
+    sendMessage($chat_id, $reply, 'HTML');
+}
+
+// ============================================================
+// ========== الدوال الأساسية ==================================
+// ============================================================
+
+/**
+ * استخراج الرابط الأول من النص
+ */
+function extractUrl($text) {
+    preg_match('/https?:\/\/[^\s]+/', $text, $matches);
+    return $matches[0] ?? null;
+}
+
+/**
+ * الحصول على روابط التحميل من أي موقع (يوتيوب، تيك توك، فيسبوك، إنستغرام، إلخ)
+ * تعتمد على خدمات متعددة وتجربها بالتتابع
+ */
+function getDownloadLinks($url) {
+    // التحقق من التخزين المؤقت
+    $cacheKey = md5($url);
+    $cacheFile = CACHE_DIR . $cacheKey . '.json';
+    if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < 3600)) { // صلاحية ساعة
+        $cached = json_decode(file_get_contents($cacheFile), true);
+        if ($cached) return $cached;
+    }
+
+    // تحديد نوع الموقع
+    $domain = parse_url($url, PHP_URL_HOST);
+    $domain = str_replace('www.', '', $domain);
+
+    $result = false;
+
+    // 1. يوتيوب
+    if (strpos($domain, 'youtube.com') !== false || strpos($domain, 'youtu.be') !== false) {
+        $result = getYouTubeLinks($url);
+    }
+    // 2. تيك توك
+    elseif (strpos($domain, 'tiktok.com') !== false) {
+        $result = getTikTokLinks($url);
+    }
+    // 3. فيسبوك
+    elseif (strpos($domain, 'facebook.com') !== false || strpos($domain, 'fb.watch') !== false) {
+        $result = getFacebookLinks($url);
+    }
+    // 4. إنستغرام
+    elseif (strpos($domain, 'instagram.com') !== false) {
+        $result = getInstagramLinks($url);
+    }
+    // 5. تويتر
+    elseif (strpos($domain, 'twitter.com') !== false || strpos($domain, 'x.com') !== false) {
+        $result = getTwitterLinks($url);
+    }
+    // 6. مواقع أخرى - نستخدم خدمة عامة
+    else {
+        $result = getGenericLinks($url);
+    }
+
+    // إذا فشلت الطريقة المخصصة، نجرب الخدمة العامة كاحتياطي
+    if ($result === false || empty($result)) {
+        $result = getGenericLinks($url);
+    }
+
+    // تخزين النتيجة في الكاش إذا نجحت
+    if ($result && !isset($result['error'])) {
+        file_put_contents($cacheFile, json_encode($result));
+    }
+
+    return $result;
+}
+
+// ========== دوال التحميل حسب الموقع ==========
+
+/**
+ * تحميل فيديو يوتيوب باستخدام ssyoutube.com
+ */
+function getYouTubeLinks($url) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://ssyoutube.com/api/convert');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['url' => $url]));
+    curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'User-Agent: Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
+    ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode != 200 || !$response) return false;
+
+    $json = json_decode($response, true);
+    if (!$json) return false;
+
+    // تحليل الرد (تختلف بنية الرد حسب الخدمة)
+    // ssyoutube يعيد عادةً: { "status": "ok", "links": { "mp4": { "360": "url", ... }, "mp3": "url" } }
+    if (isset($json['links']['mp4']) && is_array($json['links']['mp4'])) {
+        $result['video'] = [];
+        foreach ($json['links']['mp4'] as $quality => $link) {
+            $result['video'][$quality . 'p'] = $link;
+        }
+        if (isset($json['links']['mp3'])) {
+            $result['audio'] = $json['links']['mp3'];
+        }
+        return $result;
+    }
+
+    return false;
+}
+
+/**
+ * تحميل فيديو تيك توك باستخدام tikmate.cc (API غير رسمي)
+ */
+function getTikTokLinks($url) {
+    // استخدام خدمة مجانية مثل https://www.tikmate.cc/api/
+    // لكن يمكن استخدام endpoint آخر مثل https://api.tikmate.app/
+    $apiUrl = 'https://www.tikmate.cc/api/';
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl . '?url=' . urlencode($url));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'User-Agent: Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36',
+    ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode != 200 || !$response) return false;
+
+    $json = json_decode($response, true);
+    if (!$json || !isset($json['url'])) return false;
+
+    // عادةً tikmate يعيد { "url": "https://..." }
+    return ['url' => $json['url']];
+}
+
+/**
+ * تحميل فيديو فيسبوك باستخدام getvideo.watch (نسخة مبسطة)
+ */
+function getFacebookLinks($url) {
+    // استخدام خدمة https://getvideo.watch/api/ (غير رسمية)
+    $apiUrl = 'https://getvideo.watch/api/ajax/search';
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, 'q=' . urlencode($url));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/x-www-form-urlencoded',
+        'User-Agent: Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36',
+    ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode != 200 || !$response) return false;
+
+    $json = json_decode($response, true);
+    if (!$json || !isset($json['links']['Download']['High Quality'])) return false;
+
+    // قد يعيد عدة جودات
+    $result['video'] = [];
+    foreach ($json['links']['Download'] as $quality => $link) {
+        $result['video'][$quality] = $link;
+    }
+    return $result;
+}
+
+/**
+ * تحميل فيديو إنستغرام باستخدام saveinsta.app (API بسيط)
+ */
+function getInstagramLinks($url) {
+    // استخدام saveinsta.app
+    $apiUrl = 'https://saveinsta.app/api/ajaxSearch';
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, 'q=' . urlencode($url));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/x-www-form-urlencoded',
+        'User-Agent: Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36',
+    ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode != 200 || !$response) return false;
+
+    $json = json_decode($response, true);
+    if (!$json || !isset($json['media'])) return false;
+
+    // قد يكون الفيديو أو الصورة
+    if (isset($json['media']['video'])) {
+        return ['url' => $json['media']['video']];
+    } elseif (isset($json['media']['image'])) {
+        return ['url' => $json['media']['image']];
+    }
+    return false;
+}
+
+/**
+ * تحميل فيديو تويتر (نستخدم خدمة عامة)
+ */
+function getTwitterLinks($url) {
+    // استخدام خدمة عامة مثل twittervideodownloader.com
+    // لكن سنستخدم API مفتوح مثل https://api.vevioz.com/
+    // بدلاً من ذلك، نمرر للخدمة العامة.
+    return getGenericLinks($url);
+}
+
+/**
+ * خدمة عامة لتحميل الفيديو من أي موقع (تستخدم عدة APIs احتياطية)
+ * نستخدم https://social-downloader.com/api/ (مجانية ولكن محدودة)
+ * أو https://download4.cc/api/ (قديمة)
+ * أفضل: استخدام api.vevioz.com
+ */
+function getGenericLinks($url) {
+    // 1. محاولة استخدام api.vevioz.com (يدعم العديد من المواقع)
+    $apiUrl = 'https://api.vevioz.com/api/button/mp3/' . urlencode($url);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'User-Agent: Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36',
+    ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode == 200 && $response) {
+        $json = json_decode($response, true);
+        if ($json && isset($json['medias'])) {
+            $result['video'] = [];
+            foreach ($json['medias'] as $media) {
+                if (isset($media['url']) && isset($media['quality'])) {
+                    $result['video'][$media['quality']] = $media['url'];
+                }
+            }
+            if (!empty($result['video'])) return $result;
+        }
+    }
+
+    // 2. محاولة استخدام موقع savefrom.net (نسخة مبسطة)
+    // غير موصى بها لأنها تتطلب تحليل HTML، لكن نتركها للاحتياط.
+    return false;
+}
+
+// ========== دالة إرسال الرسائل إلى تيليجرام ==========
+function sendMessage($chat_id, $text, $parse_mode = 'HTML', $reply_to = null) {
+    $url = API_URL . 'sendMessage';
+    $data = [
+        'chat_id' => $chat_id,
+        'text' => $text,
+        'parse_mode' => $parse_mode,
+        'disable_web_page_preview' => true,
+    ];
+    if ($reply_to) $data['reply_to_message_id'] = $reply_to;
+
+    $options = [
+        'http' => [
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($data),
+        ],
+    ];
+    $context = stream_context_create($options);
+    file_get_contents($url, false, $context);
+}
+
+// ========== تشغيل البوت ==========
+// بعد كل شيء، لا حاجة لإضافة شيء، البوت يعمل عبر webhook.
+
+// نهاية الملف
